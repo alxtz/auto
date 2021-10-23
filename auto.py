@@ -5,41 +5,6 @@ input('Move mouse over bot window and press Enter.')
 botWindow = pyautogui.position()
 print('window', botWindow)
 
-# window = pyautogui.locateOnScreen('images/boss.png')
-# if window is None:
-#     sys.exit('Could not find game on screen. Is the game visible?')
-
-# print('pve', window)
-
-# winLeft = window[0]
-# winTop = window[1]
-
-# print('Found game window at:', winLeft, winTop)
-
-"""
-bossImg = pyautogui.locateOnScreen('images/boss.png')
-print('bs', bossImg)
-pyautogui.click(bossImg.left -400, bossImg.top)
-
-time.sleep(1.5)
-
-time.sleep(1.5)
-
-repeat = True
-img = None
-
-while repeat:
-    img = pyautogui.locateOnScreen('images/deck.png')
-    if img is not None:
-        pyautogui.click(img.left + img.width/2, img.top + img.height/2)
-        break
-    else:
-        print('error in select deck')
-
-time.sleep(1.5)
-"""
-
-
 def playCards():
     should_retry = False
     rag = pyautogui.locateOnScreen('images/rag.png', confidence = 0.5)
