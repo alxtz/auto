@@ -3,10 +3,10 @@ import pyautogui
 
 debug = True
 
-def is_img_on_screen(img_name):
+def is_img_on_screen(img_name, confidence = 0.7):
   if debug: print('[DEBUG] locating', img_name)
 
-  target = pyautogui.locateOnScreen('images/' + img_name + '.png', confidence = 0.7)
+  target = pyautogui.locateOnScreen('images/' + img_name + '.png', confidence)
 
   result = target is not None
 

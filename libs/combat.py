@@ -29,6 +29,8 @@ class combat:
       ended = combat.has_combat_ended()
       if ended:
         print('combat ended!')
+
+        # need support for boss end case
         wait_for_existance('combat_reward', dummy_click=True)
         break
       else:
@@ -134,7 +136,12 @@ class choose_abilities:
     wait_for_existance('ab_1_ok_anton')
     anton_target = pyautogui.locateOnScreen('images/ab_1_ok_anton.png', confidence = 0.7)
     locate_and_click_center('ab_1_ok_anton')
-    pyautogui.click(anton_target.left + anton_target.width/2 + 120, anton_target.top - 100) 
+    pyautogui.click(anton_target.left + anton_target.width/2 + 120, anton_target.top - 95) 
+
+    time.sleep(1)
+    if is_img_on_screen('bomb'):
+      print('trigger bomb')
+      locate_and_click_center('bomb')
 
     
   

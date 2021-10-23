@@ -3,7 +3,7 @@ from libs.shared import is_img_on_screen, locate_and_click_center
 class choose_stage_and_enter:
   @staticmethod
   def criteria():
-    if not is_img_on_screen('felwood_title'):
+    if not is_img_on_screen('felwood_title', 0.6):
       raise ValueError("criteria mismatch: choose_stage_and_enter.exec()")
 
   @staticmethod
