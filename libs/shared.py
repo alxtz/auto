@@ -30,17 +30,29 @@ def locate_and_click_center(img_name, delay = 1, optional = True):
 
   time.sleep(delay)
 
-def wait_for_existance(img_name, interval = 5, max_loop = 6):
+def wait_for_existance(img_name, interval = 5, max_loop = 6, dummy_click = False):
   count = 0
 
   while count < max_loop:
+    count = count + 1
+    print('[INFO] count', count)
+    if dummy_click:
+      opt_ref = pyautogui.locateOnScreen('images/opt_ref.png', confidence = 0.85)
+      if opt_ref is not None:
+        print('opt_ref', opt_ref)
+        pyautogui.click(opt_ref.left - 100, opt_ref.top)
+        print('try click before exist')
+      else:
+        print('opt_ref not found')
+
     check = pyautogui.locateOnScreen('images/' + img_name + '.png', confidence = 0.7)
 
     if check is not None:
       if debug: print('[DEBUG] exists', img_name)
-      break
+      return
     else:
       time.sleep(interval)
       if debug: print('[DEBUG] waiting for existance', img_name)
       continue
-
+  
+  raise ValueError("never exist", img_name)
