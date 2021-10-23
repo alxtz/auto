@@ -1,4 +1,4 @@
-import pyautogui, sys, time, cv2
+import pyautogui, sys, time, cv2, traceback
 
 print('Program started.')
 input('Move mouse over bot window and press Enter.')
@@ -57,7 +57,7 @@ def playCards():
         print('rag not located')
         should_retry = True
 
-    mage = pyautogui.locateOnScreen('images/mage.png', confidence = 0.5)
+    mage = pyautogui.locateOnScreen('images/mage_3.png', confidence = 0.5)
     if mage is not None:
         print('mage located')
         pyautogui.moveTo(mage.left + mage.width/2, mage.top + mage.height/2)
@@ -88,8 +88,8 @@ def playCards():
         should_retry = True
     return should_retry
 
-def combat():
-    print('call combat')
+def combat(max_turns = -1):
+    print('call combat', max_turns)
     img = pyautogui.locateOnScreen('images/handref.png')
     if img is not None:
         time.sleep(5)
@@ -103,29 +103,35 @@ def combat():
         time.sleep(5)
 
         # ab
-        pyautogui.click(img.left + 350, img.top + 365)
-        time.sleep(3)
         pyautogui.click(img.left + 475, img.top + 365)
         time.sleep(3)
+        pyautogui.click(img.left + 350, img.top + 365)
+        time.sleep(3)
+        
 
         # finish
         pyautogui.click(img.left + 920, img.top + 355)
         time.sleep(18) # r1 battle
 
-        # r2
-        pyautogui.click(img.left + 350, img.top + 365)
-        time.sleep(3)
-        pyautogui.click(img.left + 475, img.top + 365)
-        time.sleep(3)
-        pyautogui.click(img.left + 475, img.top + 365)
-        time.sleep(3)
+        if max_turns == -1:
+            print('start turn 2')
+            # r2
+            pyautogui.click(img.left + 475, img.top + 365)
+            time.sleep(3)
+            pyautogui.click(img.left + 350, img.top + 365)
+            time.sleep(3)
+            pyautogui.click(img.left + 475, img.top + 365)
+            time.sleep(3)
 
-        # dup
-        pyautogui.click(img.left + 475, img.top + 365)
-        time.sleep(2)
+            # dup
+            pyautogui.click(img.left + 475, img.top + 365)
+            time.sleep(2)
 
-        pyautogui.click(img.left + 920, img.top + 355)
-        time.sleep(20)
+            pyautogui.click(img.left + 920, img.top + 355)
+            time.sleep(20)
+        else:
+            print('battle with only t1')
+            time.sleep(5)
 
         pyautogui.click(img.left + 920, img.top + 355)
         time.sleep(5)
@@ -142,27 +148,46 @@ def combat():
         print('handref missing')
 
 def chooseStg2Task():
-    img = pyautogui.locateOnScreen('images/tsk.png', confidence=0.8)
-    print('choose stg2tsk', img)
+    base = pyautogui.locateOnScreen('images/inpath.png', confidence=0.5)
+    img = pyautogui.locateOnScreen('images/tsk.png', confidence=0.5)
+
+    if base is None or img is None:
+        print('cant calc diff', base, img)
+
+    diff = base.left - img.left
+    print('tsk diff is', diff)
+    print('tsk', img)
+    print('base', base)
     if img is None:
         print('tsk img not found')
-    elif img.left > 950:
+        time.sleep(5)
+        img = pyautogui.locateOnScreen('images/tsk.png', confidence=0.5)
+
+    if img is None:
+        print('tsk img not found(2)')
+    elif diff < -170:
         print('its a right task')
+        pyautogui.click(img.left - 70, img.top + 250)
+        time.sleep(1)
         pyautogui.click(img.left - 50, img.top + 250)
         time.sleep(1)
         pyautogui.click(img.left + 50, img.top + 250)
+        time.sleep(1)
+        pyautogui.click(img.left + 120, img.top + 250)
         time.sleep(1)
         pyautogui.mouseUp()
-    elif img.left < 750:
+    elif diff > 160:
         print('its a left task')
         pyautogui.click(img.left - 60, img.top + 250)
-        time.sleep(1)
+        time.sleep(0.5)
         pyautogui.click(img.left - 50, img.top + 250)
-        time.sleep(1)
+        time.sleep(0.5)
         pyautogui.click(img.left + 50, img.top + 250)
-        time.sleep(1)
+        time.sleep(0.5)
         pyautogui.click(img.left + 115, img.top + 250)
-        time.sleep(1)
+        time.sleep(0.5)
+        pyautogui.click(img.left + 130, img.top + 250)
+        time.sleep(0.5)
         pyautogui.mouseUp()
     else:
         print('its a middle task')
@@ -182,7 +207,7 @@ def chooseStg2Task():
         time.sleep(1)
         pyautogui.mouseUp()
 
-def postStgTaskSelect():
+def postStgTaskSelect(turn = -1):
     print('post select')
     # img = pyautogui.locateOnScreen('images/combatbtn.png')
     img = pyautogui.locateOnScreen('images/combatbtn.png', confidence=0.8)
@@ -190,7 +215,10 @@ def postStgTaskSelect():
         pyautogui.click(img.left+50, img.top+50)
         print('click start combat')
         time.sleep(20)
-        combat()
+        if turn == 1:
+            combat(max_turns = 1)
+        else:
+            combat()
     else:
         print('pick something')
         img = pyautogui.locateOnScreen('images/event.png', confidence=0.8)
@@ -221,9 +249,25 @@ def pickReward():
         if img is not None:
             pyautogui.click(img.left+50, img.top - 250)
             time.sleep(2)
-            # img = pyautogui.locateOnScreen('images/select.png', confidence=0.8)
+            
+            reksa = pyautogui.locateOnScreen('images/reksa.png', confidence=0.8)
+            if reksa is not None:
+                print('pick reksa instead')
+                pyautogui.click(reksa.left+10, reksa.top+10)
+                time.sleep(1)
+            
+            # dia = pyautogui.locateOnScreen('images/dia_reward.png', confidence=0.8)
+            # if dia is not None:
+            #     print('pick dia instead')
+            #     pyautogui.click(dia.left+10, dia.top+10)
+            #     time.sleep(1)
+
+            # click ok
             pyautogui.click(img.left+20, img.top +20)
             time.sleep(2)
+
+def rewardSelectionScreen():
+    return
 
 def sur():
     print('sur')
@@ -254,14 +298,16 @@ def sur():
         pyautogui.click(img.left+10, img.top+10)
         time.sleep(2)
     img = pyautogui.locateOnScreen('images/endok.png', confidence=0.8)
-    pyautogui.click(img.left+10, img.top+10)
-    time.sleep(2)
-    pyautogui.click(img.left+10, img.top+10)
-    time.sleep(3)
-    pyautogui.click(img.left+10, img.top+10)
-    time.sleep(3)
-    pyautogui.click(img.left+10, img.top+10)
-    time.sleep(3)
+    
+    if img is not None:
+        pyautogui.click(img.left+10, img.top+10)
+        time.sleep(2)
+        pyautogui.click(img.left+10, img.top+10)
+        time.sleep(3)
+        pyautogui.click(img.left+10, img.top+10)
+        time.sleep(3)
+        pyautogui.click(img.left+10, img.top+10)
+        time.sleep(3)
 
 def start():
     time.sleep(5)
@@ -291,10 +337,11 @@ def wait_for_visible():
 def find_and_click_center():
     return
 
+# while False:
 while True:
     try:
         time.sleep(4)
-        postStgTaskSelect()
+        postStgTaskSelect(turn = 1)
         print('combat end sleep')
         time.sleep(5)
         print('before choose stg 2 task')
@@ -312,8 +359,10 @@ while True:
         err_count = err_count + 1
         print('[e] err_count', err_count)
         print('err in loop', e)
-        if err_count > 10 and err_count < 100:
+        print('[e] stacktrace', traceback.format_exc())
+        if err_count > 10 and err_count < 15:
             check = pyautogui.locateOnScreen('images/me.png', confidence=0.8)
+            check_in_path = pyautogui.locateOnScreen('images/inpath.png', confidence=0.8)
             print('check', check)
             time.sleep(3)
             if check is not None:
@@ -323,13 +372,37 @@ while True:
                 time.sleep(3)
                 surgame = pyautogui.locateOnScreen('images/surgame.png', confidence=0.8)
                 pyautogui.click(surgame.left +10, surgame.top+10)
+                time.sleep(15)
+                pyautogui.click(surgame.left +10, surgame.top+10)
                 time.sleep(3)
+                pyautogui.click(surgame.left +10, surgame.top+10)
+                time.sleep(3)
+                pyautogui.click(surgame.left +10, surgame.top+10)
+                time.sleep(3)
+                pyautogui.click(surgame.left +10, surgame.top+10)
+                time.sleep(10)
                 start()
                 err_count = 0
                 print('restarted')
-        elif err_count > 20:
+                continue
+            elif check_in_path is not None:
+                print('try to recover from path view')
+                sur()
+                print('recover sur')
+                time.sleep(2)
+                start()
+                print('recover start')
+                continue
+        elif err_count > 16:
             print('too many err')
             break
 
+# chooseStg2Task()
+
+# img = pyautogui.locateOnScreen('images/tsk.png', confidence=0.5)
+# print('tsk', img)
 
 
+
+
+# chooseStg2Task()
