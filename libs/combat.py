@@ -9,7 +9,7 @@ class combat:
       raise ValueError("criteria mismatch: combat.exec()")
 
   @staticmethod
-  def exec():
+  def exec(boss_fight = False):
     combat.criteria()
     combat.play_hand()
     combat.end_turn()
@@ -22,16 +22,15 @@ class combat:
 
       # trigger battle ~~
 
-      # wait for at least 20 seconds, or til
-      # 1. ablities are shown
-      # 2. win icon has shown
-      # oh oh, actually shouldn't wait for any of those
       ended = combat.has_combat_ended()
       if ended:
         print('combat ended!')
 
-        # need support for boss end case
-        wait_for_existance('combat_reward', dummy_click=True)
+        if boss_fight:
+          print('do boss rewards')
+        else:
+          wait_for_existance('combat_reward', dummy_click=True)
+
         break
       else:
         print('fight temp ended, wait for another round')

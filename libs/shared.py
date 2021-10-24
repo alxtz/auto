@@ -1,7 +1,8 @@
 import time
 import pyautogui
 
-debug = True
+# debug = True
+debug = False
 
 def is_img_on_screen(img_name, confidence = 0.7):
   if debug: print('[DEBUG] locating', img_name)
