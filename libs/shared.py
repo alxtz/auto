@@ -31,6 +31,22 @@ def locate_and_click_center(img_name, delay = 1, optional = True):
 
   time.sleep(delay)
 
+def locate_and_click_center_2(img_name, delay = 1, optional = True):
+  if debug: print('[DEBUG] locating', img_name)
+
+  target = pyautogui.locateOnScreen('images/' + img_name + '.png', confidence = 0.8)
+
+  if debug: print('[DEBUG] located and try to click', target)
+
+  if not optional:
+    pyautogui.click(target.left + target.width/2, target.top + target.height/2)
+  else:
+    if target is not None:
+      pyautogui.click(target.left + target.width/2, target.top + target.height/2)
+
+
+  time.sleep(delay)
+
 def wait_for_existance(img_name, interval = 5, max_loop = 6, dummy_click = False):
   count = 0
 

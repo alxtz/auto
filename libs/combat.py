@@ -1,6 +1,6 @@
 import time
 import pyautogui
-from libs.shared import is_img_on_screen, locate_and_click_center, wait_for_existance
+from libs.shared import is_img_on_screen, locate_and_click_center, locate_and_click_center_2, wait_for_existance
 
 class combat:
   @staticmethod
@@ -28,6 +28,44 @@ class combat:
 
         if boss_fight:
           print('do boss rewards')
+
+          print('time to click on rewards')
+
+          ref = pyautogui.locateOnScreen('images/opt_ref.png', confidence = 0.9)
+
+          # skip dummies
+          time.sleep(3)
+          pyautogui.click(ref.left - 100, ref.top)
+          time.sleep(3)
+          pyautogui.click(ref.left - 100, ref.top)
+          time.sleep(3)
+          pyautogui.click(ref.left - 100, ref.top)
+
+          time.sleep(15)
+
+          print('ref', ref)
+
+          pyautogui.click(ref.left - 300, ref.top - 100)
+          time.sleep(1.5)
+          pyautogui.click(ref.left - 600, ref.top - 100)
+          time.sleep(1.5)
+          pyautogui.click(ref.left - 700, ref.top - 400)
+          time.sleep(1.5)
+          pyautogui.click(ref.left - 200, ref.top - 400)
+          time.sleep(1.5)
+          pyautogui.click(ref.left - 400, ref.top - 550)
+          time.sleep(1.5)
+          pyautogui.click(ref.left - 400, ref.top - 310)
+          time.sleep(5)
+
+          print('click completed')
+
+          pyautogui.moveTo(ref.left - 100, ref.top)
+
+          wait_for_existance('complete_ok')
+          locate_and_click_center('complete_ok')
+          wait_for_existance('felwood_title')
+
         else:
           wait_for_existance('combat_reward', dummy_click=True)
 
@@ -38,6 +76,12 @@ class combat:
 
   @staticmethod
   def revert():
+    locate_and_click_center_2('opt_ref')
+    print('opened ref')
+    time.sleep(5)
+    locate_and_click_center('sur')
+    print('clicked sur')
+    wait_for_existance('felwood_title', dummy_click=True)
     return
 
   @staticmethod
@@ -48,7 +92,10 @@ class combat:
 
   @staticmethod
   def play_rag():
-    rag = pyautogui.locateOnScreen('images/hand_rag.png', confidence = 0.7)
+    rag = pyautogui.locateOnScreen('images/hand_rag.png', confidence = 0.6)
+
+    if rag is None:
+      raise ValueError("rag hero died in combat")
 
     pyautogui.moveTo(rag.left + rag.width/2, rag.top + rag.height/2)
     time.sleep(2)
@@ -81,6 +128,9 @@ class combat:
   def play_anton():
     target = pyautogui.locateOnScreen('images/hand_anton.png', confidence = 0.7)
 
+    if target is None:
+      raise ValueError("anton hero died in combat")
+
     pyautogui.moveTo(target.left + target.width/2, target.top + target.height/2)
     time.sleep(2)
     pyautogui.mouseDown(button='left')
@@ -101,11 +151,15 @@ class combat:
       time.sleep(5)
       still_in_combat = pyautogui.locateOnScreen('images/ab_2_ok_baron.png', confidence = 0.7)
       combat_won = pyautogui.locateOnScreen('images/combat_won.png', confidence = 0.7)
+      someone_died = pyautogui.locateOnScreen('images/someone_died.png', confidence = 0.7)
+
 
       if still_in_combat:
         return False
       elif combat_won:
         return True
+      elif someone_died:
+        raise ValueError("hero died in combat")
       else:
         if loop_count > 10:
           raise ValueError("has_combat_ended() unexpected state")
@@ -137,10 +191,14 @@ class choose_abilities:
     locate_and_click_center('ab_1_ok_anton')
     pyautogui.click(anton_target.left + anton_target.width/2 + 120, anton_target.top - 95) 
 
-    time.sleep(1)
-    if is_img_on_screen('bomb'):
+    print('try to see if bomb exist')
+
+    time.sleep(3)
+    if is_img_on_screen('bomb', confidence=0.5):
       print('trigger bomb')
       locate_and_click_center('bomb')
+    else:
+      print('bomb not exist')
 
     
   

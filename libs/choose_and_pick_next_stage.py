@@ -70,6 +70,7 @@ class choose_and_pick_next_stage:
         has_buff = is_img_on_screen('has_stage_buff') and is_img_on_screen('select_stage_buff')
         has_myst_bomb = is_img_on_screen('has_stage_bomb') and is_img_on_screen('select_stage_bomb')
         has_myst_dest = is_img_on_screen('has_stage_dest') and is_img_on_screen('select_stage_dest')
+        has_myst = is_img_on_screen('has_stage_myst') and is_img_on_screen('select_stage_myst')
 
         print('has', has_battle, has_revive, has_buff)
 
@@ -92,6 +93,18 @@ class choose_and_pick_next_stage:
           pyautogui.click(dummy.left, dummy.top)
           time.sleep(3)
           return "buff"
+        elif has_myst:
+          locate_and_click_center('select_stage_myst')
+          time.sleep(1)
+          target = pyautogui.locateOnScreen('images/myst_select.png', confidence=0.9)
+          pyautogui.click(target.left, target.top - 200)
+          time.sleep(2)
+          pyautogui.click(target.left, target.top)
+          time.sleep(3)
+          pyautogui.click(target.left, target.top)
+          time.sleep(3)
+
+          return "myst"
         elif has_myst_bomb:
           dummy = pyautogui.locateOnScreen('images/has_stage_bomb.png', confidence = 0.8)
           locate_and_click_center('select_stage_bomb')
